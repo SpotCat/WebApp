@@ -1,0 +1,164 @@
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <div ng-if="!currentArtist">
+        <h3>
+            Welcome to SpotCat! Search for an artist or <a ng-click="getTopCategories()">View Top Categories</a>
+        </h3>
+        <table ng-if="topCategories && !categoriesByName" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Artist</th>
+                    <th>Album/Track</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="cat in topCategories">
+                    <td>{{ cat.categoryName }}</td>
+                    <td>{{ cat.info.artists[0].name }}</td>
+                    <td>{{ cat.info.name }}</td>
+                    <td>{{ cat.count }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="alert alert-danger" ng-if="errorText">
+        <i class="fa fa-warning"></i>
+        {{ errorText }}
+    </div>
+    <div ng-if="currentArtist != ''">
+        <h2>{{ currentArtist.name }}</h2>
+
+        <!--ALBUM TABLE-->
+        <div ng-if="currentArtistAlbums && !currentAlbumTracks">
+            <h3 class="sub-header">
+                Albums
+                <input position="inline"
+                       placeholder="Filter"
+                       class="pull-right form-control"
+                       type="text"
+                       ng-model="albumSearchText"
+                       ng-minlength="1"
+                       style="width: 200px; font-weight: normal;">
+            </h3>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Categories</th>
+                            <th>Add Category</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="album in currentArtistAlbums | filter: albumSearchText">
+                            <td width="3%">
+                                <a href="{{ album.external_urls.spotify }}" target="_blank">
+                                    <i class="fa fa-play-circle" style="padding-top: 2px;"></i>
+                                </a>
+                            </td>
+                            <td><a ng-click="selectAlbum(album)">{{ album.name }}</a></td>
+                            <td>
+                                <div class="btn-group"
+                                     ng-repeat="cat in albumCategories[album.id]"
+                                     style="padding-left: 5px; padding-right: 5px;">
+                                    <div class="btn btn-default btn-sm">
+                                        {{ cat.categoryName }}
+                                    </div>
+                                    <div id="{{ cat._id }}"
+                                         class="btn btn-default btn-sm">
+                                        {{ cat.count }}
+                                    </div>
+                                    <div class="btn btn-primary btn-sm"
+                                         ng-click="incrementCategory(cat)"
+                                         ng-if="!cat.incremented && !cat.local">+</div>
+                                    <div class="btn btn-success btn-sm"
+                                         ng-if="cat.incremented">✓</div>
+                                </div>
+                            </td>
+                            <td width="20%">
+                                <div class="input-group">
+                                    <input id="{{ album.id }}" type="text" class="form-control" placeholder="Category...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default"
+                                                type="button"
+                                                ng-click="createCategory(album.id, 'album')">Add
+                                        </button>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!--TRACKS TABLE-->
+        <div ng-if="currentAlbumTracks">
+            <h3 class="sub-header">
+                <i class="fa fa-arrow-circle-left" ng-click="backFromAlbum()" style="cursor: pointer"></i> {{ currentAlbum.name }}
+                <input position="inline"
+                       placeholder="Filter"
+                       class="pull-right form-control"
+                       type="text"
+                       ng-model="trackSearchText"
+                       ng-minlength="1"
+                       style="width: 200px; font-weight: normal;">
+            </h3>
+            <div class="table-responsive" ng-if="currentAlbumTracks">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Categories</th>
+                            <th>Add Category</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="track in currentAlbumTracks | filter: trackSearchText">
+                            <td width="3%">
+                                <a href="{{ track.external_urls.spotify }}" target="_blank">
+                                    <i class="fa fa-play-circle" style="padding-top: 2px;"></i>
+                                </a>
+                            </td>
+                            <td>{{ track.name }}</td>
+                            <td>
+                                <div class="btn-group"
+                                     ng-repeat="cat in trackCategories[track.id]"
+                                     style="padding-left: 5px; padding-right: 5px;">
+                                    <div class="btn btn-default btn-sm">
+                                        {{ cat.categoryName }}
+                                    </div>
+                                    <div id="{{ cat._id }}"
+                                         class="btn btn-default btn-sm">
+                                        {{ cat.count }}
+                                    </div>
+                                    <div class="btn btn-primary btn-sm"
+                                         ng-click="incrementCategory(cat)"
+                                         ng-if="!cat.incremented && !cat.local">+</div>
+                                    <div class="btn btn-success btn-sm"
+                                         ng-if="cat.incremented">✓</div>
+                                </div>
+                            </td>
+                            <td width="20%">
+                                <div class="input-group">
+                                    <input id="{{ track.id }}" type="text" class="form-control" placeholder="Category...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default"
+                                                type="button"
+                                                ng-click="createCategory(track.id, 'track')">Add
+                                        </button>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

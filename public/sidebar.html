@@ -1,0 +1,41 @@
+<div class="col-sm-3 col-md-2 sidebar">
+    <ul class="nav nav-sidebar">
+        <li style="text-align: center;">
+            <style>
+                .inner-addon {
+                    position: relative;
+                }
+
+                .inner-addon .form-input-loader {
+                  position: absolute;
+                  padding: 10px;
+                }
+
+                .left-addon .form-input-loader  { left:  0px;}
+                .right-addon .form-input-loader { right: 10px;}
+
+                .left-addon input  { padding-left:  30px; }
+                .right-addon input { padding-right: 30px; }
+
+                img {
+
+                }
+            </style>
+            <div class="inner-addon right-addon">
+                <i class="fa fa-spinner fa-spin form-input-loader" ng-if="loadingSearch"></i>
+                <input type="text"
+                       class="form-control"
+                       placeholder="Search for artist..."
+                       ng-model="artistSearchText"
+                       ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }"
+                       ng-change="fetchArtists($viewValue);"
+                       style="width: 90%; margin: auto;">
+            </div>
+        </li>
+    </ul>
+    <ul class="nav nav-sidebar">
+        <li ng-repeat="artistResult in artistResults" ng-class="{active: artistResult.name == currentArtist.name}">
+            <a ng-click="selectArtist(artistResult)" class="">{{ artistResult.name }}</a>
+        </li>
+    </ul>
+</div>
